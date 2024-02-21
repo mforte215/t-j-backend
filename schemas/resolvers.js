@@ -4,17 +4,23 @@ const {signToken, AuthenticationError} = require('../utils/auth');
 const resolvers = {
     Query: {
         users: async () => {
-            return User.find().populate('blogs');
+            return User.find();
         },
         user: async (parent, {username}) => {
-            return User.findOne({username}).populate('blogs');
+            return User.findOne({username});
         },
         me: async (parent, args, context) => {
             if (context.user) {
-                return User.findOne({_id: context.user._id}).populate('blogs');
+                return User.findOne({_id: context.user._id});
             }
             throw AuthenticationError;
         },
+        blogs: async () => {
+            return Blog.find().populate('author').sort({date: -1});
+        },
+        blog: async (parent, {_id}) => {
+            return Blog.findOne({_id: _id}).populate('author');
+        }
     },
 
     Mutation: {
@@ -23,8 +29,8 @@ const resolvers = {
             const token = signToken(user);
             return {token, user};
         },
-        login: async (parent, {email, password}) => {
-            const user = await User.findOne({email});
+        login: async (parent, {username, password}) => {
+            const user = await User.findOne({username});
 
             if (!user) {
                 throw AuthenticationError;
@@ -39,6 +45,22 @@ const resolvers = {
             const token = signToken(user);
 
             return {token, user};
+        },
+        addBlog: async (parent, {image, title, subtitle, content}, context) => {
+            if (context.user) {
+
+                const blog = await Blog.create({
+                    image: image,
+                    title: title,
+                    subtitle: subtitle,
+                    content: content,
+                    author: context.user._id
+                });
+
+                return blog;
+            }
+            throw AuthenticationError;
+            ('You need to be logged in!');
         },
     },
 };

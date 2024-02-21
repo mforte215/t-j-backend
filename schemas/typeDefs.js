@@ -4,15 +4,16 @@ const typeDefs = `
     username: String
     email: String
     password: String
-    blogs: [Blog]
   }
 
   type Blog {
     _id: ID
+    image: String
     title: String
+    subtitle: String
     content: String
-    createdAt: String
     author: User
+    date: String
   }
 
   type Auth {
@@ -24,11 +25,14 @@ const typeDefs = `
     users: [User]
     user(username: String!): User
     me: User
+    blogs: [Blog]
+    blog(_id: ID): Blog
   }
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
-    login(email: String!, password: String!): Auth
+    login(username: String!, password: String!): Auth
+    addBlog(image: String!, title: String!, subtitle: String!, content: String!): Blog
   }
 `;
 
