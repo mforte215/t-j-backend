@@ -11,7 +11,7 @@ const resolvers = {
         },
         me: async (parent, args, context) => {
             if (context.user) {
-                return User.findOne({_id: context.user._id});
+                return Blog.find({author: context.user._id});
             }
             throw AuthenticationError;
         },
@@ -58,6 +58,21 @@ const resolvers = {
                 });
 
                 return blog;
+            }
+            throw AuthenticationError;
+            ('You need to be logged in!');
+        },
+        removeBlog: async (parent, {id}, context) => {
+            if (context.user) {
+                //get the blog and make sure the IDs match
+                const foundBlog = Blog.findOne({_id: id}).populate('author');
+                if (foundBlog.author._id == context.user._id) {
+                    //is the owner of the blog
+                    const removedBlog = await Blog.findOneAndDelete({
+                        _id: id
+                    });
+                    return removedBlog;
+                }
             }
             throw AuthenticationError;
             ('You need to be logged in!');

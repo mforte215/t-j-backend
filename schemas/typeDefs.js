@@ -24,7 +24,7 @@ const typeDefs = `
   type Query {
     users: [User]
     user(username: String!): User
-    me: User
+    me: [Blog]
     blogs: [Blog]
     blog(_id: ID): Blog
   }
@@ -33,6 +33,7 @@ const typeDefs = `
     addUser(username: String!, email: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
     addBlog(image: String!, title: String!, subtitle: String!, content: String!): Blog
+    removeBlog(id: ID!): Blog
   }
 `;
 
