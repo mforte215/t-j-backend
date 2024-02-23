@@ -27,13 +27,14 @@ const typeDefs = `
     me: [Blog]
     blogs: [Blog]
     blog(_id: ID): Blog
+    userBlogs(_id: ID): [Blog]
   }
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
     addBlog(image: String!, title: String!, subtitle: String!, content: String!): Blog
-    removeBlog(id: ID!): Blog
+    removeBlog(removeBlogId: ID!): Blog
   }
 `;
 

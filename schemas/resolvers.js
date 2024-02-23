@@ -20,6 +20,9 @@ const resolvers = {
         },
         blog: async (parent, {_id}) => {
             return Blog.findOne({_id: _id}).populate('author');
+        },
+        userBlogs: async (parent, {_id}) => {
+            return Blog.find({author: _id});
         }
     },
 
@@ -62,14 +65,16 @@ const resolvers = {
             throw AuthenticationError;
             ('You need to be logged in!');
         },
-        removeBlog: async (parent, {id}, context) => {
+        removeBlog: async (parent, {removeBlogId}, context) => {
+            console.log("IN RESOLVER");
+            console.log("ID TO DELETE: " + removeBlogId);
             if (context.user) {
                 //get the blog and make sure the IDs match
-                const foundBlog = Blog.findOne({_id: id}).populate('author');
+                const foundBlog = await Blog.findOne({_id: removeBlogId});
                 if (foundBlog.author._id == context.user._id) {
                     //is the owner of the blog
                     const removedBlog = await Blog.findOneAndDelete({
-                        _id: id
+                        _id: removeBlogId
                     });
                     return removedBlog;
                 }
