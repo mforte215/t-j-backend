@@ -22,7 +22,20 @@ const resolvers = {
             return Blog.findOne({_id: _id}).populate('author');
         },
         userBlogs: async (parent, {_id}) => {
-            return Blog.find({author: _id});
+            return Blog.find({author: _id}).populate('author');
+        },
+        singleBlogByMe: async (parent, {blogId}, context) => {
+            if (context.user) {
+
+                const foundBlog = await Blog.findOne({_id: blogId}).populate('author');
+                if (foundBlog.author._id == context.user._id) {
+
+                    //user owns the blog
+                    return foundBlog
+                }
+                throw AuthenticationError;
+            }
+            throw AuthenticationError;
         }
     },
 
@@ -82,6 +95,31 @@ const resolvers = {
             throw AuthenticationError;
             ('You need to be logged in!');
         },
+        editBlog: async (parent, {blogId, image, title, subtitle, content}, context) => {
+            if (context.user) {
+                console.log("IN MUTATION. FOUND USER")
+                const foundBlog = await Blog.findOne({_id: blogId}).populate('author');
+                if (foundBlog.author._id == context.user._id) {
+
+                    const filter = {_id: blogId};
+                    const update = {
+                        image: image,
+                        title: title,
+                        subtitle: subtitle,
+                        content: content,
+                    }
+                    const updatedBlog = await Blog.findOneAndUpdate(
+                        filter,
+                        update,
+                        {returnOriginal: false}
+                    );
+
+                    return updatedBlog;
+                }
+                throw AuthenticationError;
+            }
+
+        }
     },
 };
 

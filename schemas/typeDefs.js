@@ -28,6 +28,7 @@ const typeDefs = `
     blogs: [Blog]
     blog(_id: ID): Blog
     userBlogs(_id: ID): [Blog]
+    singleBlogByMe(blogId: ID!): Blog
   }
 
   type Mutation {
@@ -35,6 +36,7 @@ const typeDefs = `
     login(username: String!, password: String!): Auth
     addBlog(image: String!, title: String!, subtitle: String!, content: String!): Blog
     removeBlog(removeBlogId: ID!): Blog
+    editBlog(blogId: ID!, image: String, title: String, subtitle: String, content: String): Blog
   }
 `;
 
