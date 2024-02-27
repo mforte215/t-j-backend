@@ -14,6 +14,11 @@ const typeDefs = `
     content: String
     author: User
     date: String
+    tags: [Tag]
+  }
+
+  type Tag {
+    name: String
   }
 
   type Auth {
@@ -29,6 +34,7 @@ const typeDefs = `
     blog(_id: ID): Blog
     userBlogs(_id: ID): [Blog]
     singleBlogByMe(blogId: ID!): Blog
+    checkIfAccountExists(email: String): Boolean
   }
 
   type Mutation {

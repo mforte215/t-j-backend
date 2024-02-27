@@ -1,4 +1,4 @@
-const {User, Blog} = require('../models');
+const {User, Blog, Tag} = require('../models');
 const {signToken, AuthenticationError} = require('../utils/auth');
 
 const resolvers = {
@@ -36,6 +36,15 @@ const resolvers = {
                 throw AuthenticationError;
             }
             throw AuthenticationError;
+        },
+        checkIfAccountExists: async (parent, {email}) => {
+            let doesExist = await User.exists({email: email});
+            if (doesExist?._id) {
+                return true
+            }
+            else {
+                return false
+            }
         }
     },
 
