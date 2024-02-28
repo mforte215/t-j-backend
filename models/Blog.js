@@ -7,8 +7,13 @@ const blogSchema = new mongoose.Schema({
     subtitle: {type: String, required: true},
     content: {type: String, required: true},
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    date: {type: Date, default: Date.now(), get: (timestamp) => dateFormat(timestamp)}
-
+    date: {type: Date, default: Date.now(), get: (timestamp) => dateFormat(timestamp)},
+    tags: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tag',
+        }
+    ],
 });
 
 // Create the Blog model

@@ -1,4 +1,4 @@
 const User = require('./User');
 const Blog = require('./Blog');
-
-module.exports = {User, Blog};
+const Tag = require('./Tag');
+module.exports = {User, Blog, Tag};
