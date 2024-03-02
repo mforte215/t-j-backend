@@ -24,6 +24,28 @@ const resolvers = {
         userBlogs: async (parent, {_id}) => {
             return Blog.find({author: _id}).populate('author').populate('tags');
         },
+        blogsByTag: async (parent, {tagName}) => {
+            try {
+                //find the tag object
+                const tag = await Tag.findOne({name: tagName});
+                if (!tag) {
+                    console.log("Tag doesn't exist");
+                    return;
+                }
+
+                const blogs = await Blog.find({tags: tag._id}).populate('author');
+                if (blogs.length === 0) {
+                    console.log("no blogs with that tag found!");
+                    return;
+                }
+                console.log("LOGGING BLOGS WITH TAG: " + tagName);
+                console.log(blogs)
+                return blogs;
+            } catch (error) {
+                console.log(error);
+            }
+
+        },
         singleBlogByMe: async (parent, {blogId}, context) => {
             if (context.user) {
 
@@ -135,18 +157,37 @@ const resolvers = {
             throw AuthenticationError;
             ('You need to be logged in!');
         },
-        editBlog: async (parent, {blogId, image, title, subtitle, content}, context) => {
+        editBlog: async (parent, {blogId, image, title, subtitle, content, tags}, context) => {
             if (context.user) {
                 console.log("IN MUTATION. FOUND USER")
                 const foundBlog = await Blog.findOne({_id: blogId}).populate('author');
                 if (foundBlog.author._id == context.user._id) {
+                    const myTagsToCreate = [];
 
+                    for (let i = 0; i < tags.length; i++) {
+                        const tag = await Tag.findOne({name: tags[i]});
+                        console.log("DID FIND TAG?")
+                        console.log(tag);
+                        if (!tag) {
+                            const newTag = await Tag.create({name: tags[i]});
+                            console.log("NEWLY CREATED TAG");
+                            console.log(newTag);
+                            myTagsToCreate.push(newTag._id);
+                        }
+                        else {
+                            myTagsToCreate.push(tag._id);
+                        }
+                    }
+
+                    console.log("LOGGING TAGS TO ADD");
+                    console.log(myTagsToCreate);
                     const filter = {_id: blogId};
                     const update = {
                         image: image,
                         title: title,
                         subtitle: subtitle,
                         content: content,
+                        tags: myTagsToCreate
                     }
                     const updatedBlog = await Blog.findOneAndUpdate(
                         filter,

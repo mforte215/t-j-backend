@@ -37,6 +37,7 @@ const typeDefs = `
     singleBlogByMe(blogId: ID!): Blog
     checkIfAccountExists(email: String): Boolean
     checkIfTagExists(name: String!): Boolean
+    blogsByTag(tagName: String): [Blog]
   }
 
   type Mutation {
@@ -44,7 +45,7 @@ const typeDefs = `
     login(username: String!, password: String!): Auth
     addBlog(image: String!, title: String!, subtitle: String!, content: String!, tags:[String]): Blog
     removeBlog(removeBlogId: ID!): Blog
-    editBlog(blogId: ID!, image: String, title: String, subtitle: String, content: String): Blog
+    editBlog(blogId: ID!, image: String, title: String, subtitle: String, content: String, tags: [String]): Blog
     addTag(name: String!): Tag
     AddTagToBlog(findBlog: ID!, tagName: [String!]): Blog
   }
