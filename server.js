@@ -14,7 +14,7 @@ const server = new ApolloServer({
 });
 
 const corsOptions = {
-    origin: "tech-journey-fe.vercel.app/:1",
+    origin: "tech-journey-fe.vercel.app/",
 };
 
 const PORT = Number.parseInt(process.env.PORT) || 3001;
