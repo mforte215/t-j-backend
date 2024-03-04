@@ -31,10 +31,11 @@ const startApolloServer = async () => {
 
     app.use(express.urlencoded({extended: false}));
     app.use(express.json());
-    app.use(cors(corsOptions));
-    app.use('/graphql', expressMiddleware(server, {
-        context: authMiddleware
-    }));
+    app.use('/graphql',
+        cors < cors.CorsRequest > ({origin: ['https://tech-journey-fe.vercel.app/']}),
+        expressMiddleware(server, {
+            context: authMiddleware
+        }));
 
 
     db.once('open', () => {
