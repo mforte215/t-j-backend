@@ -31,7 +31,6 @@ const startApolloServer = async () => {
 
     app.use(express.urlencoded({extended: false}));
     app.use(express.json());
-    app.use(cors(corsOptions));
     app.use('/graphql', expressMiddleware(server, {
         context: authMiddleware
     }));
